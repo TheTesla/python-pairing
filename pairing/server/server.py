@@ -67,6 +67,19 @@ def admin_index():
     return render_template("admin.html", pending=pending_list, paired=paired_list)
 
 
+@app.route("/admin/unpair/<client_id>", methods=["POST"])
+def admin_unpair(client_id):
+    cid = normalize_code(client_id)
+    with _lock:
+        if cid not in pending or pending[cid].get("status") != "paired":
+            flash(f"Client {cid} nicht gefunden oder nicht gekoppelt.", "error")
+            return redirect(url_for("admin_index"))
+        del pending[cid]
+        _save()
+    flash(f"Pairing zu {cid} aufgehoben.", "success")
+    return redirect(url_for("admin_index"))
+
+
 @app.route("/admin/pair", methods=["POST"])
 def admin_pair():
     code = request.form.get("pairing_code", "").strip()

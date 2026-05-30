@@ -68,11 +68,16 @@ tr:hover td{background:#111125}
 <h2>Gekoppelte Peers ({{ paired|length }})</h2>
 {% if paired %}
 <table>
-<tr><th>Client ID</th><th>Status</th></tr>
+<tr><th>Client ID</th><th>Status</th><th></th></tr>
 {% for p in paired %}
 <tr>
 <td style="font-family:monospace">{{ p.client_id }}</td>
 <td><span class="badge paired">gekoppelt</span></td>
+<td>
+<form method="POST" action="/admin/unpair/{{ p.client_id }}" style="display:inline">
+<button type="submit" style="background:#3a1a1a;color:#ff6666;padding:6px 14px;font-size:12px;margin:0">Lösen</button>
+</form>
+</td>
 </tr>
 {% endfor %}
 </table>
