@@ -233,6 +233,29 @@ def api_verify(client_id):
     })
 
 
+@app.route("/api/pair/verify-session/<client_id>", methods=["POST"])
+def api_verify_session(client_id):
+    cid = normalize_code(client_id)
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"status": "error", "message": "Keine Daten"}), 400
+
+    try:
+        nonce = bytes.fromhex(data.get("nonce", ""))
+    except (ValueError, TypeError):
+        return jsonify({"status": "error", "message": "Ungültiges Nonce"}), 400
+
+    with _lock:
+        if cid not in pending or pending[cid].get("status") != "paired":
+            return jsonify({"status": "unpaired"})
+
+        e = pending[cid]
+        session_key = bytes.fromhex(e["session_key"])
+
+    hmac_val = hmac_sha256(session_key, nonce + cid.encode())
+    return jsonify({"status": "ok", "hmac": hmac_val.hex()})
+
+
 def _cleanup_loop():
     while True:
         time.sleep(60)

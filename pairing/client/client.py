@@ -26,6 +26,55 @@ def save_state(state):
     STATE_FILE.chmod(0o600)
 
 
+def verification_loop(state, server):
+    client_id = state["client_id"]
+    session_key = bytes.fromhex(state["session_key"])
+
+    print()
+    print("=" * 60)
+    print("  Überwache Pairing-Status (Ctrl+C zum Beenden)")
+    print("=" * 60)
+
+    counter = 0
+    while True:
+        try:
+            nonce = generate_random(16)
+            r = requests.post(
+                f"{server}/api/pair/verify-session/{client_id}",
+                json={"nonce": nonce.hex()},
+                timeout=10,
+            )
+            r.raise_for_status()
+            data = r.json()
+
+            if data["status"] == "unpaired":
+                print(f"\n[!] Pairing aufgehoben!")
+                save_state({"paired": False})
+                return 1
+
+            if data["status"] == "ok":
+                expected = hmac_sha256(session_key, nonce + client_id.encode())
+                received = bytes.fromhex(data["hmac"])
+                if not constant_time_compare(expected, received):
+                    print(f"\n[!] Session ungültig – Schlüssel stimmen nicht!")
+                    save_state({"paired": False})
+                    return 1
+
+                counter += 1
+                if counter % 12 == 0:
+                    print(f"\r[*] Verbindung aktiv ({counter * 10}s)", end="", flush=True)
+
+        except KeyboardInterrupt:
+            print("\n[*] Beendet.")
+            return 0
+        except requests.RequestException as e:
+            print(f"\n[FEHLER] Server nicht erreichbar: {e}")
+            time.sleep(10)
+            continue
+
+        time.sleep(10)
+
+
 def main():
     parser = argparse.ArgumentParser(description="VPN Pairing Client (SPAKE2)")
     parser.add_argument("server_url", help="Server-URL (z.B. http://10.0.0.1:5000)")
@@ -36,9 +85,8 @@ def main():
 
     state = load_state()
     if state.get("paired") and not args.force:
-        print("[i] Bereits gekoppelt (--force für neues Pairing).")
-        print(f"[i] Session Key: {state.get('session_key', '?')}")
-        return 0
+        print("[i] Bereits gekoppelt – starte Überwachung.")
+        return verification_loop(state, server)
 
     if args.force:
         save_state({"paired": False})
@@ -178,10 +226,18 @@ def main():
         print("  Aus diesem Key können später WireGuard-Schlüssel")
         print("  oder ein PSK abgeleitet werden.")
         print("=" * 60)
-        return 0
+
+        return verification_loop({
+            "client_id": client_id,
+            "session_key": session_key.hex(),
+        }, server)
 
     return 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        print("\n[*] Beendet.")
+        sys.exit(0)
