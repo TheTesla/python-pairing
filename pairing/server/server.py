@@ -21,6 +21,7 @@ PENDING_FILE = DATA_DIR / "pending.json"
 _lock = threading.Lock()
 
 pending = {}
+_rate_limit = {}  # client_id → list of timestamps
 
 PAIRING_TIMEOUT = 600  # 10 min
 
@@ -61,8 +62,10 @@ def admin_index():
             has_pin = bool(e.get("pin"))
             entry["pin_entered"] = has_pin
             if s == "paired":
+                entry["display_id"] = cid
                 paired_list.append(entry)
             else:
+                entry["display_id"] = cid[:4] + "…"
                 pending_list.append(entry)
     return render_template("admin.html", pending=pending_list, paired=paired_list)
 
@@ -160,6 +163,13 @@ def api_spake2(client_id):
             return jsonify({"status": "paired"})
         if not e.get("pin"):
             return jsonify({"status": "error", "message": "PIN noch nicht eingegeben"}), 400
+
+        now = time.time()
+        attempts = _rate_limit.setdefault(cid, [])
+        attempts[:] = [t for t in attempts if now - t < 30]
+        if len(attempts) >= 5:
+            return jsonify({"status": "error", "message": "Zu viele Versuche – bitte 30s warten"}), 429
+        attempts.append(now)
 
         pin = e["pin"]
         try:

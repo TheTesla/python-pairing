@@ -54,7 +54,7 @@ tr:hover td{background:#111125}
 <tr><th>Client ID</th><th>Code</th><th>Status</th><td></th></tr>
 {% for p in pending %}
 <tr>
-<td style="font-family:monospace">{{ p.client_id }}</td>
+<td style="font-family:monospace">{{ p.display_id }}</td>
 <td>{{ "eingegeben" if p.pin_entered else "offen" }}</td>
 <td><span class="badge {{ 'ready' if p.pin_entered else 'init' }}">{{ "bereit" if p.pin_entered else "wartet" }}</span></td>
 <td style="color:#555;font-size:11px">{{ p.age }}</td>
@@ -71,7 +71,7 @@ tr:hover td{background:#111125}
 <tr><th>Client ID</th><th>Status</th><th></th></tr>
 {% for p in paired %}
 <tr>
-<td style="font-family:monospace">{{ p.client_id }}</td>
+<td style="font-family:monospace">{{ p.display_id }}</td>
 <td><span class="badge paired">gekoppelt</span></td>
 <td>
 <form method="POST" action="/admin/unpair/{{ p.client_id }}" style="display:inline">

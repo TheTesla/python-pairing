@@ -1,0 +1,42 @@
+{
+  "BD0X1J18": {
+    "status": "paired",
+    "pin": "5HWWD6",
+    "created_at": 1780154171.8915381,
+    "client_msg": "4130524f2077ecbd8bc2ed3623dfbfd3bd06672a06b1bee4b965a9b7b3d7bc3a94",
+    "confirm_key": "2d45761605c21491f996c55a894d183bafbd8021f73e426860b6cda2902633da",
+    "session_key": "c83158f3b7fdc23a5b12452efbbaacd3e5aa301d62afa588ea14a264e63f1fff",
+    "server_msg": "421ff81cbbf6c4ae21673deaef185c555f190bd6dc0d139cdbd0881465ad515a84",
+    "paired_at": 1780154171.9689631
+  },
+  "MNJII49M": {
+    "status": "paired",
+    "pin": "L8R3SL",
+    "created_at": 1780154184.4946434,
+    "client_msg": "41a928c8a3a60e85ae6e7770026139a82bf3e153687df8366a6fffec89f0ba4568",
+    "confirm_key": "c9be27e57156dfb4231aa72be19fc8d20e4271732400a687e420777585b4da0e",
+    "session_key": "f351d4d2c3c370a06dad6bcb006f65da751e25fa20e4a7f17708055e564b7f5e",
+    "server_msg": "424cc55811f114b66f9f5df974d56a7232d543105e5c6d25ad1dca9d27e0be24a2",
+    "paired_at": 1780154184.5793464
+  },
+  "GDWTEPVC": {
+    "status": "paired",
+    "pin": "BV3UOM",
+    "created_at": 1780154199.3171623,
+    "client_msg": "419d6de73525d9056f4968b9ec40c5185c8c347887980e25c9585491d1d8068701",
+    "confirm_key": "cc9e601f004f2b91efc1d2d3c0ffedd1b1748a5758243d5d55ffcc95bb865f5c",
+    "session_key": "6b247577944f43f0910378c419a714dd8367f8ba91a7afb923ec4053cac04e00",
+    "server_msg": "42db1c06e5057d887165a910fb9ea2750a1c3a26a2b2052c2f1823da7fc17c97e9",
+    "paired_at": 1780154199.3837316
+  },
+  "6WUGVQDE": {
+    "status": "paired",
+    "pin": "UBBNI9",
+    "created_at": 1780159413.4619787,
+    "client_msg": "41083de07f383b71e0968922411d6e0b804c601888f31bd9d55b5379379f35f911",
+    "confirm_key": "e6eb1cc902556af10738f438593e3915d191c94a89af6078192dde42247e9156",
+    "session_key": "71764ad9f57b64e3457a8e9b2050ccef56c9b1d99632d4858cb3e68f659c8cb2",
+    "server_msg": "42ddfbb37e3a286af1da6217efe73a75560baeb177ef1de567321124bbd61944c3",
+    "paired_at": 1780159426.6050465
+  }
+}
