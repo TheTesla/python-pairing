@@ -9,6 +9,10 @@ from cryptography.hazmat.primitives import hashes
 CHARSET = string.ascii_uppercase + string.digits
 
 
+def generate_random(length):
+    return os.urandom(length)
+
+
 def generate_id(length=8):
     return ''.join(random.choices(CHARSET, k=length))
 
@@ -40,6 +44,10 @@ def derive_session_key(spake_key):
         algorithm=hashes.SHA256(), length=32, salt=None,
         info=b"vpn-pairing-session-key",
     ).derive(spake_key)
+
+
+def hmac_sha256(key, data):
+    return hmac_mod.new(key, data, hashlib.sha256).digest()
 
 
 def compute_hmac(key, client_id, client_msg, server_msg, role):
